@@ -3,48 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="../CSS/style.css">
-    <link rel="stylesheet" href="../Bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Dress Shoping</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/CSS/style.css">
 </head>
 <body>
-    <div class="cart">
-        <h2 class="cart-title">Cart</h2>
-        <i class="fa-sharp fa-regular fa-circle-xmark" id="close-cart">  </i>
-       
-        <div class="cart-content">
-          
-            <div class="cart-box">
-               
-
-                <img src="../Images/Gagara1.jpg" length="110px" width="110px" alt="Loading" class="cart-img-top img1"/>
-               
-                <div class="detail-box">
-                    
-                    <div class="cart-product-title">Gagra</div>
-                    <div class="close-cart"></div>
-                    
-                    
-                    <div class="cart-price">₹999</div>
-                    <input type="number" class="cart-quantity"/>
-
-                    </div>
-                    <i class="bx-bx-trash cart-remove" ></i>
-                    </div>
-                    </div>
-                    <div class="total">
-                        <div class="total-title">Total</div>
-                        <div class="total-price">₹0</div>
-                       
-                    </div>
-                  
-                    <button type="submit" class="btn btn-primary">Order Now</button>
-
-                </div>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="home.html">Dresses cart</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="home.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="cart.html">Cart</a>
+                    </li>
+                </ul>
             </div>
+        </nav>
+    </header>
 
-        
-            <script src="../Bootstrap/js/bootstrap.min.js"></script>
+    <main class="container mt-4">
+        <h2>Your Cart</h2>
+        <div id="cart-container">
+            <!-- Cart items will be displayed here dynamically -->
+        </div>
+        <button onclick="checkout()" class="btn btn-primary">Checkout</button>
+    </main>
+
+    <footer class="bg-dark text-white text-center py-3 mt-4">
+        <p>&copy; Any Dress are available</p>
+    </footer>
+
+    <script src="/JS/script.js"></script>
+    <script>
+        function removeFromCart(index) {
+            cartItems.splice(index, 1);
+            saveCartToLocalStorage();
+            displayCartItems();
+        }
+
+        function saveCartToLocalStorage() {
+            localStorage.setItem('cartItems', JSON.stringify(cartItems));
+        }
+
+        function loadCartFromLocalStorage() {
+            const savedCart = localStorage.getItem('cartItems');
+            if (savedCart) {
+                cartItems = JSON.parse(savedCart);
+            }
+        }
+
+        function displayCartItems() {
+            const cartContainer = document.querySelector('#cart-container');
+
+            let cartHTML = '';
+            let total = 0;
+
+            cartItems.forEach((item, index) => {
+                cartHTML += `<div class="cart-item">
+                                <h3>${item.name}</h3>
+                                <p>Price: $${item.price}</p>
+                                <button onclick="removeFromCart(${index})">Remove</button>
+                            </div>`;
+                total += item.price;
+            });
+
+            cartHTML += `<p>Total: $${total}</p>`;
+            cartContainer.innerHTML = cartHTML;
+        }
+
+        function checkout() {
+            if (cartItems.length === 0) {
+                alert("Your cart is empty. Please add items to proceed to checkout.");
+            } else {
+                const total = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                alert(`Order placed successfully!\nTotal: $${total}`);
+                cartItems = [];
+                saveCartToLocalStorage();
+                displayCartItems();
+            }
+        }
+
+        // Call loadCartFromLocalStorage to load cart items from localStorage on page load
+        loadCartFromLocalStorage();
+
+        // Call the displayCartItems function to show the cart items
+        displayCartItems();
+    </script>
 </body>
 </html>
